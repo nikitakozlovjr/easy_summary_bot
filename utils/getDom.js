@@ -1,11 +1,20 @@
 import axios from 'axios';
 
 const getDom = async (urls) => {
-    const doms = await urls.map(async (url) => {
-        const { data } = await axios.get(url);
-        return data;
+    const promises = urls.map(async (url) => {
+        try {
+            const { data } = await axios.get(url);
+            return { status: 'succes', data};
+        }  catch (_e) {
+            return { 
+                status: 'error', 
+                data: `Не отправить запрос к сайту ${url}. Убедитель в корректности ссылки`
+            };
+        }
     });
-    return doms;
+
+    const results = await Promise.all(promises)
+    return results;
 };
 
 export default getDom;
